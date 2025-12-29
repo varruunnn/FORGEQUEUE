@@ -1,0 +1,6 @@
+{
+  "name": "worker",
+  "dependencies": {
+    "@local/shared": "workspace:*"
+  }
+}

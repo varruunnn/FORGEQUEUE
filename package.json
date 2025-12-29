@@ -1,0 +1,21 @@
+{
+  "name": "forgequeue",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "bun --cwd apps/api run dev",
+    "dev:worker": "bun --cwd apps/worker run dev",
+    "build": "bun --cwd apps/api run build && bun --cwd apps/worker run build"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
