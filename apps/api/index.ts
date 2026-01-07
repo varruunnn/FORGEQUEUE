@@ -17,7 +17,9 @@ Bun.serve({
       const job: JobPayload = {
         id: crypto.randomUUID(),
         type: "email",
-        data: job_data
+        data: job_data,
+        created_at: Date.now(),
+        retries: 0
       };
 
       await redis.lpush(QueueName, JSON.stringify(job));

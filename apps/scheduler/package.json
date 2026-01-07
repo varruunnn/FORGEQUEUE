@@ -1,0 +1,6 @@
+{
+  "name": "scheduler",
+  "dependencies": {
+    "@local/shared": "workspace:*"
+  }
+}
