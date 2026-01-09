@@ -2,6 +2,7 @@ export * from "./redis"
 export const QueueName = "forge-queue";
 export const PROCESSING_QUEUE = "default-queue:processing";
 export const FAILED_QUEUE = "default-queue:failed";
+export const DELAY_QUEUE = "default-queue:delayed";
 export interface JobPayload {
     id: string;
     type: "email" | "report";

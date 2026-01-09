@@ -1,4 +1,4 @@
-import { log, QueueName, PROCESSING_QUEUE, create_redis_client, JobPayload } from "@local/shared";
+import { log, QueueName, PROCESSING_QUEUE,DELAY_QUEUE, create_redis_client, JobPayload } from "@local/shared";
 
 const redis = create_redis_client("SCHEDULER");
 const TIMEOUT_MS = 30 * 1000; // 30 seconds visibility timeout
@@ -32,7 +32,17 @@ async function runScheduler() {
         console.error("Error parsing job", e);
       }
     }
-  }, 5000); 
+    //10 items per tick to avoid blocking single thread;;;
+    const dueJobs = await redis.zrangebyscore(DELAY_QUEUE,0,now,"LIMIT",0,10);
+    for(const rawJob of dueJobs){
+      const multi = redis.multi();
+      multi.zrem(DELAY_QUEUE,rawJob)
+      multi.lpush(QueueName,rawJob)
+      await multi.exec();
+      const job = JSON.parse(rawJob);
+      log("sche-",`Promoted delayed job ${job.id} to main`)
+    }
+  }, 1000); 
 }
 
 runScheduler();

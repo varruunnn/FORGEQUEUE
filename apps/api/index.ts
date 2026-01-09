@@ -1,4 +1,4 @@
-import { QueueName, log, JobPayload, create_redis_client } from "../../packages/shared";
+import { QueueName, log, JobPayload, create_redis_client,DELAY_QUEUE } from "../../packages/shared";
 
 const port = 3000;
 const redis = create_redis_client("api");
@@ -21,10 +21,16 @@ Bun.serve({
         created_at: Date.now(),
         retries: 0
       };
+      const delay = job_data.delay || 0;
+      if(delay>0){
+        const runAt=Date.now()+delay;
+        await redis.zadd(DELAY_QUEUE,runAt,JSON.stringify(job));
+        log("API",`Scheduled JOB ${job.id} for ${new Date(runAt).toISOString}`);
+      }else{
+        await redis.lpush(QueueName, JSON.stringify(job));
+        log("API", `Job Enqueued ${job.id}`);
+      }
 
-      await redis.lpush(QueueName, JSON.stringify(job));
-
-      log("API", `Job Enqueued ${job.id}`);
 
       return new Response(
         JSON.stringify({
