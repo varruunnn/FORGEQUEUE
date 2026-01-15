@@ -1,15 +1,23 @@
-# forgequeue
+## Architecture
+This project implements a distributed job queue pattern using **Redis** as the message broker.
 
-To install dependencies:
+flowchart LR
 
-```bash
-bun install
-```
+    P[Producer<br/>(Bun API)]
+    R[(Redis List)]
+    C[Consumer<br/>(Bun Worker)]
+    PQ[(Processing Queue)]
+    D[(Done Queue)]
+    S[Scheduler<br/>Rescue Service]
 
-To run:
+    P -- LPUSH --> R
+    C -- BRPOPLPUSH --> R
+    C -- Move Job --> PQ
+    PQ -- ACK --> D
+    S -- Rescue<br/>Stale Jobs --> PQ
 
-```bash
-bun run index.ts
-```
 
-This project was created using `bun init` in bun v1.2.23. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+##  Tech Stack
+- **Runtime:** Bun (TypeScript)
+- **Broker:** Redis 
+- **Reliability:** At-Least-Once Delivery, Dead Letter Queues, Exponential Backoff.
