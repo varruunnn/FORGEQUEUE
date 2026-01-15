@@ -10,7 +10,10 @@
   "scripts": {
     "dev:api": "bun --cwd apps/api run dev",
     "dev:worker": "bun --cwd apps/worker run dev",
-    "build": "bun --cwd apps/api run build && bun --cwd apps/worker run build"
+    "build": "bun --cwd apps/api run build && bun --cwd apps/worker run build",
+      "start:api": "bun run apps/api/index.ts",
+      "start:worker": "bun run apps/worker/index.ts",
+      "start:scheduler": "bun run apps/scheduler/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
